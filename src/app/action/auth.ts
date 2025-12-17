@@ -7,13 +7,17 @@ import { revalidatePath } from 'next/cache'
 export async function register(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+  console.log('=== REGISTER ATTEMPT ===')
+  console.log('Email:', email)
+  console.log('Password:', password)
+  console.log('========================')
 
   if (!email || !password) {
     throw new Error('Email dan password harus diisi')
   }
 
-  if (password.length < 6) {
-    throw new Error('Password minimal 6 karakter')
+  if (password.length < 5) {
+    throw new Error('Password minimal 5 karakter')
   }
 
   const supabase = await createClient()
