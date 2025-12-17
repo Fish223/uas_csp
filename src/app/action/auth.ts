@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '../supabase/server'
+import { createClient } from '@/app/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
@@ -8,13 +8,12 @@ export async function register(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-
   if (!email || !password) {
-    return { error: 'Email dan password harus diisi' }
+    throw new Error('Email dan password harus diisi')
   }
 
-  if (password.length < 5) {
-    return { error: 'Password minimal 6 karakter' }
+  if (password.length < 6) {
+    throw new Error('Password minimal 6 karakter')
   }
 
   const supabase = await createClient()
@@ -25,7 +24,7 @@ export async function register(formData: FormData) {
   })
 
   if (error) {
-    return { error: error.message }
+    throw new Error(error.message)
   }
 
   redirect('/login')
@@ -35,9 +34,8 @@ export async function login(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  
   if (!email || !password) {
-    return { error: 'Email dan password harus diisi' }
+    throw new Error('Email dan password harus diisi')
   }
 
   const supabase = await createClient()
@@ -48,7 +46,7 @@ export async function login(formData: FormData) {
   })
 
   if (error) {
-    return { error: error.message }
+    throw new Error('Email atau password salah')
   }
 
   revalidatePath('/', 'layout')
